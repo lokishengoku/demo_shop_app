@@ -1,4 +1,4 @@
-import 'package:demo_shop_app/models/product.dart';
+import 'package:demo_shop_app/providers/product.dart';
 import 'package:demo_shop_app/widgets/product_item.dart';
 import 'package:demo_shop_app/widgets/products_grid.dart';
 import 'package:flutter/material.dart';
