@@ -1,5 +1,8 @@
+import 'package:demo_shop_app/providers/cart.dart';
+import 'package:demo_shop_app/widgets/badge.dart';
 import 'package:demo_shop_app/widgets/products_grid.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 enum FilterOptions {
   Favorites,
@@ -25,6 +28,16 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
           style: Theme.of(context).textTheme.headline6,
         ),
         actions: [
+          Consumer<Cart>(
+            builder: (ctx, cart, ch) => Badge(
+                child: ch!,
+                value: cart.itemCount.toString(),
+                color: Theme.of(context).accentColor),
+            child: IconButton(
+              icon: Icon(Icons.shopping_cart),
+              onPressed: () {},
+            ),
+          ),
           PopupMenuButton(
             itemBuilder: (_) => [
               PopupMenuItem(
@@ -48,7 +61,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                 });
               }
             },
-          )
+          ),
         ],
       ),
       body: ProductsGrid(showFavs: _showOnlyFavorite),

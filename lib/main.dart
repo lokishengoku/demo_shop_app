@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:demo_shop_app/providers/cart.dart';
 import 'package:demo_shop_app/providers/products.dart';
 import 'package:demo_shop_app/screens/product_detail_screen.dart';
 import 'package:demo_shop_app/screens/products_overview_screen.dart';
@@ -14,8 +15,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (ctx) => Products(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (ctx) => Products(),
+        ),
+        ChangeNotifierProvider(
+          create: (ctx) => Cart(),
+        ),
+      ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -23,9 +31,15 @@ class MyApp extends StatelessWidget {
             accentColor: Colors.deepOrange,
             textTheme: TextTheme(
               bodyText2: TextStyle(
-                  fontFamily: 'OpenSans', fontSize: 14, color: Colors.white),
+                fontFamily: 'OpenSans',
+                fontSize: 14,
+                color: Colors.white,
+              ),
               bodyText1: TextStyle(
-                  fontFamily: 'OpenSans', fontSize: 14, color: Colors.black),
+                fontFamily: 'OpenSans',
+                fontSize: 14,
+                color: Colors.black,
+              ),
               headline6: TextStyle(
                   fontFamily: 'SourceSansPro',
                   fontSize: 20,
