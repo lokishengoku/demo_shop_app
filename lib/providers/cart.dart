@@ -1,4 +1,3 @@
-import 'package:demo_shop_app/providers/product.dart';
 import 'package:flutter/widgets.dart';
 
 class Cart with ChangeNotifier {
@@ -10,6 +9,14 @@ class Cart with ChangeNotifier {
 
   int get itemCount {
     return _items != null ? _items.length : 0;
+  }
+
+  double get totalAmount {
+    double total = 0.0;
+    _items.forEach((key, value) {
+      total += value.price * value.quanitity;
+    });
+    return total;
   }
 
   void addItem(String productId, String productTitle, double price) {
@@ -27,6 +34,11 @@ class Cart with ChangeNotifier {
           () => CartItem(
               id: productId, title: productTitle, quanitity: 1, price: price));
     }
+    notifyListeners();
+  }
+
+  void removeItem(String productId) {
+    _items.remove(productId);
     notifyListeners();
   }
 }
