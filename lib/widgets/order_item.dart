@@ -52,7 +52,7 @@ class _OrderItemState extends State<OrderItem> {
                             color: Colors.black),
                       ),
                       Text(
-                        '${widget.order.products[index].quanitity}x \$${widget.order.products[index].price}',
+                        '${widget.order.products[index].quantity}x \$${widget.order.products[index].price}',
                         style: TextStyle(fontSize: 18, color: Colors.grey),
                       )
                     ],
