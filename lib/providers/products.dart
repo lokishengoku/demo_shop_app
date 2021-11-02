@@ -25,10 +25,10 @@ class Products with ChangeNotifier {
         'https://flutter-shop-app-demo-6b516-default-rtdb.asia-southeast1.firebasedatabase.app/products.json');
     try {
       final response = await http.get(url);
-      final extractedDate = json.decode(response.body) as Map<String, dynamic>;
+      final extractedData = json.decode(response.body) as Map<String, dynamic>;
       final List<Product> loadedProducts = [];
 
-      extractedDate.forEach((key, value) {
+      extractedData.forEach((key, value) {
         loadedProducts.add(Product(
           id: key,
           title: value['title'],
