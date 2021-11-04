@@ -1,13 +1,27 @@
+import 'package:flutter/widgets.dart';
 import 'dart:convert';
 
 import 'package:demo_shop_app/models/http_exception.dart';
-import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class Auth extends ChangeNotifier {
   String _token = '';
-  DateTime _expireDate = DateTime.now();
+  dynamic _expireDate;
   String _userId = '';
+
+  bool get isAuth {
+    return token.length > 0;
+  }
+
+  String get token {
+    if (_expireDate != null &&
+        _expireDate.isAfter(DateTime.now()) &&
+        _token.length > 0) {
+      return _token;
+    }
+    return '';
+  }
 
   Future<void> _authenticate(
     String email,
@@ -16,7 +30,7 @@ class Auth extends ChangeNotifier {
   ) async {
     try {
       Uri url = Uri.parse(
-          'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=[API_KEY]');
+          'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=${dotenv.get('FIREBASE_API_KEY')}');
       final response = await http.post(url,
           body: json.encode({
             'email': email,
@@ -28,6 +42,15 @@ class Auth extends ChangeNotifier {
       if (responseData['error'] != null) {
         throw HttpException(responseData['error']['message']);
       }
+      _token = responseData['idToken'];
+      _userId = responseData['localId'];
+      _expireDate = DateTime.now().add(
+        Duration(
+          seconds: int.parse(responseData['expiresIn']),
+        ),
+      );
+
+      notifyListeners();
     } catch (error) {
       throw (error);
     }

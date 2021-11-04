@@ -1,8 +1,10 @@
 import 'dart:ui';
 
+import 'package:demo_shop_app/providers/auth.dart';
 import 'package:demo_shop_app/providers/cart.dart';
 import 'package:demo_shop_app/providers/orders.dart';
 import 'package:demo_shop_app/providers/products.dart';
+import 'package:demo_shop_app/screens/auth-screen.dart';
 import 'package:demo_shop_app/screens/cart_screen.dart';
 import 'package:demo_shop_app/screens/edit_product_screen.dart';
 import 'package:demo_shop_app/screens/orders_screen.dart';
@@ -11,8 +13,11 @@ import 'package:demo_shop_app/screens/products_overview_screen.dart';
 import 'package:demo_shop_app/screens/user_products_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+Future main() async {
+  await dotenv.load(fileName: ".env");
+
   runApp(MyApp());
 }
 
@@ -23,7 +28,14 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (ctx) => Products(),
+          create: (ctx) => Auth(),
+        ),
+        ChangeNotifierProxyProvider<Auth, Products>(
+          create: (ctx) => Products('', []),
+          update: (ctx, auth, previusProducts) => Products(
+            auth.token,
+            previusProducts!.items,
+          ),
         ),
         ChangeNotifierProvider(
           create: (ctx) => Cart(),
@@ -32,38 +44,42 @@ class MyApp extends StatelessWidget {
           create: (ctx) => Orders(),
         ),
       ],
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-            primaryColor: Colors.purple,
-            accentColor: Colors.deepOrange,
-            textTheme: TextTheme(
-              bodyText2: TextStyle(
-                fontFamily: 'OpenSans',
-                fontSize: 14,
-                color: Colors.white,
-              ),
-              bodyText1: TextStyle(
-                fontFamily: 'OpenSans',
-                fontSize: 14,
-                color: Colors.black,
-              ),
-              headline6: TextStyle(
-                  fontFamily: 'SourceSansPro',
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white),
-            )),
-        // home: ProductsOverviewScreen(),
-        initialRoute: '/',
-        routes: {
-          '/': (ctx) => ProductsOverviewScreen(),
-          ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
-          CartScreen.routeName: (ctx) => CartScreen(),
-          OrdersScreen.routeName: (ctx) => OrdersScreen(),
-          UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
-          EditProductScreen.routeName: (ctx) => EditProductScreen(),
-        },
+      child: Consumer<Auth>(
+        builder: (ctx, auth, child) => MaterialApp(
+          title: 'Flutter Demo',
+          theme: ThemeData(
+              primaryColor: Colors.purple,
+              accentColor: Colors.deepOrange,
+              textTheme: TextTheme(
+                bodyText2: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontSize: 14,
+                  color: Colors.white,
+                ),
+                bodyText1: TextStyle(
+                  fontFamily: 'OpenSans',
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
+                headline6: TextStyle(
+                    fontFamily: 'SourceSansPro',
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              )),
+          home: auth.isAuth ? ProductsOverviewScreen() : AuthScreen(),
+          // initialRoute: '/',
+          routes: {
+            // '/': (ctx) => AuthScreen(),
+            AuthScreen.routeName: (ctx) => AuthScreen(),
+            ProductsOverviewScreen.routeName: (ctx) => ProductsOverviewScreen(),
+            ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
+            CartScreen.routeName: (ctx) => CartScreen(),
+            OrdersScreen.routeName: (ctx) => OrdersScreen(),
+            UserProductsScreen.routeName: (ctx) => UserProductsScreen(),
+            EditProductScreen.routeName: (ctx) => EditProductScreen(),
+          },
+        ),
       ),
     );
   }
