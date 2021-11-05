@@ -9,8 +9,9 @@ class Products with ChangeNotifier {
   List<Product> _items = [];
 
   final String authToken;
+  final String userId;
 
-  Products(this.authToken, this._items);
+  Products(this.authToken, this.userId, this._items);
 
   List<Product> get items {
     return [..._items];
@@ -25,12 +26,18 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
-    final url = Uri.parse(
+    Uri url = Uri.parse(
         'https://flutter-shop-app-demo-6b516-default-rtdb.asia-southeast1.firebasedatabase.app/products.json?auth=$authToken');
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       final List<Product> loadedProducts = [];
+
+      // load product's isFavorite attribute
+      url = Uri.parse(
+          'https://flutter-shop-app-demo-6b516-default-rtdb.asia-southeast1.firebasedatabase.app/userFavorites/$userId.json?auth=$authToken');
+      final favoriteResponse = await http.get(url);
+      final favoriteData = json.decode(favoriteResponse.body);
 
       extractedData.forEach((key, value) {
         loadedProducts.add(Product(
@@ -39,7 +46,7 @@ class Products with ChangeNotifier {
           description: value['description'],
           price: value['price'],
           imageUrl: value['imageUrl'],
-          isFavorite: value['isFavorite'],
+          isFavorite: favoriteData == null ? false : favoriteData[key] ?? false,
         ));
       });
 
@@ -61,7 +68,6 @@ class Products with ChangeNotifier {
             'description': newProduct.description,
             'imageUrl': newProduct.imageUrl,
             'price': newProduct.price,
-            'isFavorite': newProduct.isFavorite
           }));
 
       final addedProduct = Product(

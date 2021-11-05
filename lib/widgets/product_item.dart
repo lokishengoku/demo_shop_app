@@ -29,10 +29,15 @@ class ProductItem extends StatelessWidget {
           backgroundColor: Colors.black87,
           leading: Consumer<Product>(
             builder: (ctx, product, child) => IconButton(
-                onPressed: () => product.toggleFavoriteState(authData.token),
-                icon: Icon(
-                    product.isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: Theme.of(context).accentColor)),
+              onPressed: () => product.toggleFavoriteState(
+                authData.token,
+                authData.userId,
+              ),
+              icon: Icon(
+                product.isFavorite ? Icons.favorite : Icons.favorite_border,
+                color: Theme.of(context).accentColor,
+              ),
+            ),
           ),
           title: Text(
             product.title,
