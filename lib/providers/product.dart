@@ -20,7 +20,7 @@ class Product with ChangeNotifier {
       required this.imageUrl,
       this.isFavorite = false});
 
-  Future<void> toggleFavoriteState() async {
+  Future<void> toggleFavoriteState(String authToken) async {
     bool oldStatus = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
