@@ -10,6 +10,7 @@ import 'package:demo_shop_app/screens/edit_product_screen.dart';
 import 'package:demo_shop_app/screens/orders_screen.dart';
 import 'package:demo_shop_app/screens/product_detail_screen.dart';
 import 'package:demo_shop_app/screens/products_overview_screen.dart';
+import 'package:demo_shop_app/screens/splash_screen.dart';
 import 'package:demo_shop_app/screens/user_products_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -73,7 +74,15 @@ class MyApp extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     color: Colors.white),
               )),
-          home: auth.isAuth ? ProductsOverviewScreen() : AuthScreen(),
+          home: auth.isAuth
+              ? ProductsOverviewScreen()
+              : FutureBuilder(
+                  future: auth.tryAutoLogin(),
+                  builder: (ctx, snapshot) =>
+                      snapshot.connectionState == ConnectionState.waiting
+                          ? SplashScreen()
+                          : AuthScreen(),
+                ),
           // initialRoute: '/',
           routes: {
             // '/': (ctx) => AuthScreen(),
