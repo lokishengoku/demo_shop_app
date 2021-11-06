@@ -4,7 +4,7 @@ import 'package:demo_shop_app/providers/auth.dart';
 import 'package:demo_shop_app/providers/cart.dart';
 import 'package:demo_shop_app/providers/orders.dart';
 import 'package:demo_shop_app/providers/products.dart';
-import 'package:demo_shop_app/screens/auth-screen.dart';
+import 'package:demo_shop_app/screens/auth_screen.dart';
 import 'package:demo_shop_app/screens/cart_screen.dart';
 import 'package:demo_shop_app/screens/edit_product_screen.dart';
 import 'package:demo_shop_app/screens/orders_screen.dart';
