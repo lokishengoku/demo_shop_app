@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 import 'dart:convert';
 
@@ -9,6 +11,7 @@ class Auth extends ChangeNotifier {
   String _token = '';
   dynamic _expireDate;
   String _userId = '';
+  dynamic _authTimer;
 
   bool get isAuth {
     return token.length > 0;
@@ -53,7 +56,7 @@ class Auth extends ChangeNotifier {
           seconds: int.parse(responseData['expiresIn']),
         ),
       );
-
+      _autoLogout();
       notifyListeners();
     } catch (error) {
       throw (error);
@@ -66,5 +69,27 @@ class Auth extends ChangeNotifier {
 
   Future<void> signup(String email, String password) async {
     return _authenticate(email, password, 'signUp');
+  }
+
+  void logout() {
+    _token = '';
+    _userId = '';
+    _expireDate = null;
+    if (_authTimer != null) {
+      _authTimer.cancel();
+      _authTimer = null;
+    }
+    notifyListeners();
+  }
+
+  void _autoLogout() {
+    if (_authTimer != null) {
+      _authTimer.cancel();
+    }
+    final timeToExpiry = _expireDate.difference(DateTime.now()).inSeconds();
+    _authTimer = Timer(
+      Duration(seconds: timeToExpiry),
+      logout,
+    );
   }
 }
