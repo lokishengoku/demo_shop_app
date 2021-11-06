@@ -63,17 +63,13 @@ class Auth extends ChangeNotifier {
       _autoLogout();
       notifyListeners();
 
-      try {
-        final SharedPreferences prefs = await _prefs;
-        final userData = json.encode({
-          'token': _token,
-          'userId': _userId,
-          'expiryDate': _expireDate.toIso8601String(),
-        });
-        prefs.setString('userData', userData);
-      } catch (error) {
-        print(error);
-      }
+      final SharedPreferences prefs = await _prefs;
+      final userData = json.encode({
+        'token': _token,
+        'userId': _userId,
+        'expiryDate': _expireDate.toIso8601String(),
+      });
+      prefs.setString('userData', userData);
     } catch (error) {
       throw (error);
     }
@@ -126,17 +122,13 @@ class Auth extends ChangeNotifier {
   }
 
   void _autoLogout() {
-    try {
-      if (_authTimer != null) {
-        _authTimer.cancel();
-      }
-      final timeToExpiry = _expireDate.difference(DateTime.now()).inSeconds();
-      _authTimer = Timer(
-        Duration(seconds: timeToExpiry),
-        logout,
-      );
-    } catch (error) {
-      print(error);
+    if (_authTimer != null) {
+      _authTimer.cancel();
     }
+    final timeToExpiry = _expireDate.difference(DateTime.now()).inSeconds();
+    _authTimer = Timer(
+      Duration(seconds: timeToExpiry),
+      logout,
+    );
   }
 }
