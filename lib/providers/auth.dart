@@ -62,7 +62,6 @@ class Auth extends ChangeNotifier {
       );
       _autoLogout();
       notifyListeners();
-
       final SharedPreferences prefs = await _prefs;
       final userData = json.encode({
         'token': _token,
@@ -88,7 +87,6 @@ class Auth extends ChangeNotifier {
     if (!prefs.containsKey('userData')) {
       return false;
     }
-    print(prefs.getString('userData'));
     final extractedUserData = json.decode(prefs.getString('userData') ?? '');
     final expiryDate = DateTime.parse(extractedUserData['expiryDate'] ?? '');
 
@@ -125,7 +123,7 @@ class Auth extends ChangeNotifier {
     if (_authTimer != null) {
       _authTimer.cancel();
     }
-    final timeToExpiry = _expireDate.difference(DateTime.now()).inSeconds();
+    final timeToExpiry = _expireDate.difference(DateTime.now()).inSeconds;
     _authTimer = Timer(
       Duration(seconds: timeToExpiry),
       logout,
