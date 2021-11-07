@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:demo_shop_app/helpers/custom_route.dart';
 import 'package:demo_shop_app/providers/auth.dart';
 import 'package:demo_shop_app/providers/cart.dart';
 import 'package:demo_shop_app/providers/orders.dart';
@@ -57,6 +58,10 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
               primaryColor: Colors.purple,
               accentColor: Colors.deepOrange,
+              pageTransitionsTheme: PageTransitionsTheme(builders: {
+                TargetPlatform.android: CustomPageTransitionBuilder(),
+                TargetPlatform.iOS: CustomPageTransitionBuilder(),
+              }),
               textTheme: TextTheme(
                 bodyText2: TextStyle(
                   fontFamily: 'OpenSans',
